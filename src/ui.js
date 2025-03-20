@@ -11,7 +11,7 @@ export function createUI(steps, saveSteps) {
     `;
   
     document.body.appendChild(panel);
-    updateUI(steps);
+    updateUI(steps, saveSteps);
   
     document.getElementById("export-guide").addEventListener("click", () => {
       console.log("Guide Steps:", JSON.stringify(steps, null, 2));
@@ -21,7 +21,7 @@ export function createUI(steps, saveSteps) {
     document.getElementById("clear-guide").addEventListener("click", () => {
       steps.length = 0;
       saveSteps(steps);
-      updateUI(steps);
+      updateUI(steps, saveSteps);
     });
 
     document.addEventListener('mousedown', function (event) {
@@ -36,7 +36,7 @@ export function createUI(steps, saveSteps) {
           description: '',
         })
         saveSteps(steps)
-        updateUI()
+        updateUI(steps, saveSteps)
         event.preventDefault()
       });
   }
@@ -73,13 +73,13 @@ export function createUI(steps, saveSteps) {
   /**
    * Updates the UI with the latest steps.
    */
-  function updateUI() {
+  function updateUI(steps, saveSteps) {
     let stepsList = document.getElementById('steps-list')
     stepsList.innerHTML = steps.map((step, index) => createStepTemplate(step, index)).join('')
-    attachEventListeners()
+    attachEventListeners(steps, saveSteps)
   }
 
-  function attachEventListeners() {
+  function attachEventListeners(steps, saveSteps) {
     document.querySelectorAll('.step-title').forEach((input) => {
       input.addEventListener('input', function () {
         let index = this.dataset.index
@@ -101,7 +101,7 @@ export function createUI(steps, saveSteps) {
         let index = this.dataset.index
         steps.splice(index, 1)
         saveSteps(steps)
-        updateUI()
+        updateUI(steps, saveSteps)
       })
     })
   }

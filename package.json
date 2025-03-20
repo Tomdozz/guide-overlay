@@ -1,6 +1,6 @@
 {
   "name": "guide-overlay",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "A simple guide overlay builder",
   "main": "dist/index.js",
   "module": "dist/index.js",
