@@ -3,10 +3,10 @@
 
   window.GuideOverlay = {
     loaded: false,
-    start: function (cssUrl) {
+    start: function () {
       if (this.loaded) return
       this.loaded = true
-      loadCSS(cssUrl)
+      loadCSS('https://cdn.jsdelivr.net/npm/guide-overlay@latest/css.css')
       init()
     },
   }
