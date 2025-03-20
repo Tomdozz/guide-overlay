@@ -23,6 +23,38 @@ export function createUI(steps, saveSteps) {
       saveSteps(steps);
       updateUI(steps);
     });
+
+    document.addEventListener('mousedown', function (event) {
+        let target = event.target
+        if (target.closest('#guide-panel')) return
+    
+        let selector = getBestSelector(target)
+    
+        steps.push({
+          selector: selector,
+          title: 'Title',
+          description: '',
+        })
+        saveSteps()
+        updateUI()
+        event.preventDefault()
+      });
+  }
+
+  function getBestSelector(target) {
+    let current = target
+
+    for (let i = 0; i < 5 && current; i++) {
+      if (current.className && typeof current.className === 'string') {
+        return `.${current.className.trim().split(/\s+/).join('.')}`
+      }
+      current = current.parentElement
+    }
+
+    if (target.id) return `#${target.id}`
+    let closestWithID = target.closest('[id]')
+    if (closestWithID) return `#${closestWithID.id}`
+    return target.tagName.toLowerCase()
   }
   
   /**
