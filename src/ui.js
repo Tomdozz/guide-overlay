@@ -35,10 +35,23 @@ export function createUI(steps, saveSteps) {
           title: 'Title',
           description: '',
         })
-        saveSteps()
+        saveSteps(steps)
         updateUI()
         event.preventDefault()
       });
+  }
+
+  function createStepTemplate(step, index) {
+    return `
+      <div class="step-container" data-index="${index}">
+          <strong>${index} ${step.selector}</strong>
+          <input type="text" class="step-title" value="${step.title}" data-index="${index}" placeholder="Step Title">
+          <textarea class="step-description" data-index="${index}" placeholder="Step Description">${step.description}</textarea>
+          <div class="actions">
+              <button class="delete-step ui-btn" data-index="${index}">🗑️</button>
+          </div>
+      </div>
+    `
   }
 
   function getBestSelector(target) {
@@ -60,16 +73,36 @@ export function createUI(steps, saveSteps) {
   /**
    * Updates the UI with the latest steps.
    */
-  export function updateUI(steps) {
-    let stepsList = document.getElementById("steps-list");
-    if (!stepsList) return;
-  
-    stepsList.innerHTML = "";
-  
-    steps.forEach((step, index) => {
-      let li = document.createElement("li");
-      li.textContent = `Step ${index + 1}: ${step.selector}`;
-      stepsList.appendChild(li);
-    });
+  function updateUI() {
+    let stepsList = document.getElementById('steps-list')
+    stepsList.innerHTML = steps.map((step, index) => createStepTemplate(step, index)).join('')
+    attachEventListeners()
+  }
+
+  function attachEventListeners() {
+    document.querySelectorAll('.step-title').forEach((input) => {
+      input.addEventListener('input', function () {
+        let index = this.dataset.index
+        steps[index].title = this.value
+        saveSteps(steps)
+      })
+    })
+
+    document.querySelectorAll('.step-description').forEach((textarea) => {
+      textarea.addEventListener('input', function () {
+        let index = this.dataset.index
+        steps[index].description = this.value
+        saveSteps(steps)
+      })
+    })
+
+    document.querySelectorAll('.delete-step').forEach((button) => {
+      button.addEventListener('click', function () {
+        let index = this.dataset.index
+        steps.splice(index, 1)
+        saveSteps(steps)
+        updateUI()
+      })
+    })
   }
   
